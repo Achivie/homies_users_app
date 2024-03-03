@@ -41,8 +41,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               ),
             ),
             Positioned(
-              top: 30,
-              right: 20,
+              top: 40,
+              left: 25,
               child: CustomButton(
                 horizontal: 20,
                 vertical: 8,
@@ -50,7 +50,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 textColor: AppColors.white,
                 head: "Skip",
                 onTap: (() {
-                  Navigator.pushNamed(
+                  Navigator.pushReplacementNamed(
                     context,
                     "/auth",
                     arguments: "sign-in",
@@ -146,7 +146,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             buttonColor: AppColors.activeButtonColor,
                             head: "Sign Up",
                             onTap: (() {
-                              Navigator.pushNamed(
+                              Navigator.pushReplacementNamed(
                                 context,
                                 "/auth",
                                 arguments: AppKeys.signUpModeKey,
@@ -235,7 +235,7 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
