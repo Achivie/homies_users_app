@@ -36,7 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   lottie:
-  google_fonts:
+  google_fonts: ^5.1.0
   smooth_page_indicator:
   country_code_picker:
   email_validator:
@@ -55,7 +55,7 @@ dependencies:
   number_paginator:
   grouped_list:
   flutter_chat_ui:
-  record_mp3:
+#  record_mp3:
   path_provider:
   simple_animation_progress_bar:
   audioplayers:
@@ -75,6 +75,7 @@ dependencies:
   appinio_swiper:
   readmore:
   badges:
+  keyboard_emoji_picker:
 
 dev_dependencies:
   flutter_test:

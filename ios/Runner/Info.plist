@@ -55,5 +55,9 @@
 	<string>To choose user profile image</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Used to capture audio</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to your location when it is in use to provide you with location-based services, such as finding nearby places.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to your location even when it is not in use to provide you with continuous location tracking and notifications about nearby events or services.</string>
 </dict>
 </plist>

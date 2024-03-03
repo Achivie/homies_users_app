@@ -102,9 +102,11 @@ class _HomePageState extends State<HomePage>
                                       (widget.placemarks != null)
                                           ? "${widget.placemarks![0].street}, ${widget.placemarks![0].subLocality!}, ${widget.placemarks![0].administrativeArea}"
                                           : "Loading...",
-                                      overflow: TextOverflow.visible,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                       style: TextStyle(
                                         color: AppColors.white,
+
                                         fontSize: 18,
                                       ),
                                     ),
