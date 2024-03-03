@@ -15,9 +15,10 @@ import 'package:homies/services/emoji_service.dart';
 import 'package:homies/services/shared_preferences_service.dart';
 import 'package:homies/styles.dart';
 import 'package:intl/intl.dart';
+import 'package:keyboard_emoji_picker/keyboard_emoji_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:record_mp3/record_mp3.dart';
+// import 'package:record_mp3/record_mp3.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({
@@ -106,6 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
     ),
   ];
   bool emojiKeyboardOpen = false;
+
   // late PlayerState globalState;
   // Duration globalNewDuration = Duration(seconds: 0),
   //     globalNewPosition = Duration(seconds: 0);
@@ -160,9 +162,9 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     if (permission.isGranted) {
       voicePath = await getFilePath();
-      RecordMp3.instance.start(voicePath, (type) {
-        setState(() {});
-      });
+      // RecordMp3.instance.start(voicePath, (type) {
+      //   setState(() {});
+      // });
     }
     setState(() {});
   }
@@ -188,265 +190,317 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  getEmojiKeyboardIos() async {
+    final hasEmojiKeyboard =
+        await KeyboardEmojiPicker().checkHasEmojiKeyboard();
+    if (hasEmojiKeyboard) {
+      // log("ios emoji keyboard");
+      // Open the keyboard.
+      final emoji = await KeyboardEmojiPicker().pickEmoji();
+      if (emoji != null) {
+        // Do something with the emoji
+        _messageController.text = "${_messageController.text}$emoji ";
+
+        // log(emoji);
+      } else {
+        // The emoji picking process was cancelled (usually, the keyboard was closed).
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.mainColor,
-        centerTitle: true,
+        // centerTitle: true,
         title: Text(
-          "Karen Smith",
+          widget.chatScreenNavigateModel.name,
           style: TextStyle(
             fontSize: 18,
             color: AppColors.white,
             fontWeight: FontWeight.w600,
           ),
         ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: 15,
+        leading: IconButton(
+          onPressed: (() {
+            Navigator.pop(context);
+          }),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.white,
           ),
-          child: Column(
-            children: [
-              Expanded(
-                child: GroupedListView<Message, DateTime>(
-                  controller: _scrollController,
-                  reverse: true,
-                  order: GroupedListOrder.DESC,
-                  elements: messages,
-                  groupBy: ((message) => DateTime(2024)),
-                  groupHeaderBuilder: ((Message message) => SizedBox()),
-                  itemBuilder: ((ctx, Message message) {
-                    switch (message.messageType) {
-                      case MessageType.text:
-                        {
-                          if (message.isSentByMe == true) {
-                            return ChatBubble(
-                              message: message.content,
-                              alignment: Alignment.centerRight,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              right: 15,
-                              containerColor: AppColors.activeDotColor,
-                              textColor: AppColors.white,
-                              timeTextColor: AppColors.white,
-                              topLeft: Radius.circular(15),
-                              sentDateTime: message.sentDateTime,
-                            );
-                          } else {
-                            return ChatBubble(
-                              message: message.content,
-                              sentDateTime: message.sentDateTime,
-                              alignment: Alignment.centerLeft,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              left: 15,
-                              containerColor: AppColors.inactiveDotColor,
-                              textColor: AppColors.mainColor,
-                              timeTextColor: AppColors.mainColor,
-                              topRight: Radius.circular(15),
-                            );
+        ),
+        actions: [
+          IconButton(
+            onPressed: (() {}),
+            icon: Icon(Icons.video_call_rounded),
+            color: AppColors.white,
+          ),
+          IconButton(
+            onPressed: (() {}),
+            icon: Icon(Icons.call),
+            color: AppColors.white,
+          ),
+          IconButton(
+            onPressed: (() {}),
+            icon: Icon(Icons.menu),
+            color: AppColors.white,
+          ),
+        ],
+      ),
+      body: KeyboardEmojiPickerWrapper(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 15,
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: GroupedListView<Message, DateTime>(
+                    controller: _scrollController,
+                    reverse: true,
+                    order: GroupedListOrder.DESC,
+                    elements: messages,
+                    groupBy: ((message) => DateTime(2024)),
+                    groupHeaderBuilder: ((Message message) => SizedBox()),
+                    itemBuilder: ((ctx, Message message) {
+                      switch (message.messageType) {
+                        case MessageType.text:
+                          {
+                            if (message.isSentByMe == true) {
+                              return ChatBubble(
+                                message: message.content,
+                                alignment: Alignment.centerRight,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                right: 15,
+                                containerColor: AppColors.activeDotColor,
+                                textColor: AppColors.white,
+                                timeTextColor: AppColors.white,
+                                topLeft: Radius.circular(15),
+                                sentDateTime: message.sentDateTime,
+                              );
+                            } else {
+                              return ChatBubble(
+                                message: message.content,
+                                sentDateTime: message.sentDateTime,
+                                alignment: Alignment.centerLeft,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                left: 15,
+                                containerColor: AppColors.inactiveDotColor,
+                                textColor: AppColors.mainColor,
+                                timeTextColor: AppColors.mainColor,
+                                topRight: Radius.circular(15),
+                              );
+                            }
                           }
-                        }
 
-                      case MessageType.image:
-                        {
-                          if (message.isSentByMe) {
-                            return ChatBubble(
-                              message: message.content,
-                              alignment: Alignment.centerRight,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              right: 15,
-                              containerColor: AppColors.activeDotColor,
-                              textColor: AppColors.white,
-                              timeTextColor: AppColors.white,
-                              topLeft: Radius.circular(15),
-                              sentDateTime: message.sentDateTime,
-                            );
-                          } else {
-                            return Container();
+                        case MessageType.image:
+                          {
+                            if (message.isSentByMe) {
+                              return ChatBubble(
+                                message: message.content,
+                                alignment: Alignment.centerRight,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                right: 15,
+                                containerColor: AppColors.activeDotColor,
+                                textColor: AppColors.white,
+                                timeTextColor: AppColors.white,
+                                topLeft: Radius.circular(15),
+                                sentDateTime: message.sentDateTime,
+                              );
+                            } else {
+                              return Container();
+                            }
                           }
-                        }
-                      // case MessageType.voice:
-                      //   {
-                      //     bool isPlaying = false;
-                      //     Duration duration = message.endDateTime
-                      //         .difference(message.startDateTime);
-                      //     Duration position = Duration(seconds: 0);
-                      //
-                      //     if (message.isSentByMe == true) {
-                      //       return ChatBubble(
-                      //         message: message.content,
-                      //         alignment: Alignment.centerRight,
-                      //         crossAxisAlignment: CrossAxisAlignment.end,
-                      //         right: 15,
-                      //         containerColor: AppColors.activeDotColor,
-                      //         textColor: AppColors.white,
-                      //         timeTextColor: AppColors.white,
-                      //         topLeft: Radius.circular(15),
-                      //         sentDateTime: message.sentDateTime,
-                      //         mainContent: Row(
-                      //           children: [
-                      //             IconButton(
-                      //               onPressed: (() async {}),
-                      //               icon: Icon(
-                      //                 isPlaying == true
-                      //                     ? Icons.cancel
-                      //                     : Icons.play_arrow,
-                      //               ),
-                      //             ),
-                      //             Expanded(
-                      //               child: Column(
-                      //                 children: [
-                      //                   Slider(
-                      //                     min: 0,
-                      //                     max: duration.inSeconds.toDouble(),
-                      //                     value: position.inSeconds.toDouble(),
-                      //                     onChanged: ((val) async {
-                      //                       position =
-                      //                           Duration(seconds: val.toInt());
-                      //                     }),
-                      //                   ),
-                      //                   Text(position.inSeconds.toString()),
-                      //                 ],
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       );
-                      //     } else {
-                      //       return Container();
-                      //     }
-                      //   }
-                      default:
-                        {
-                          if (message.isSentByMe == true) {
-                            return ChatBubble(
-                              message: message.content,
-                              alignment: Alignment.centerRight,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              right: 15,
-                              containerColor: AppColors.activeDotColor,
-                              textColor: AppColors.white,
-                              timeTextColor: AppColors.white,
-                              topLeft: Radius.circular(15),
-                              sentDateTime: message.sentDateTime,
-                            );
-                          } else {
-                            return ChatBubble(
-                              message: message.content,
-                              sentDateTime: message.sentDateTime,
-                              alignment: Alignment.centerLeft,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              left: 15,
-                              containerColor: AppColors.inactiveDotColor,
-                              textColor: AppColors.mainColor,
-                              timeTextColor: AppColors.mainColor,
-                              topRight: Radius.circular(15),
-                            );
+                        // case MessageType.voice:
+                        //   {
+                        //     bool isPlaying = false;
+                        //     Duration duration = message.endDateTime
+                        //         .difference(message.startDateTime);
+                        //     Duration position = Duration(seconds: 0);
+                        //
+                        //     if (message.isSentByMe == true) {
+                        //       return ChatBubble(
+                        //         message: message.content,
+                        //         alignment: Alignment.centerRight,
+                        //         crossAxisAlignment: CrossAxisAlignment.end,
+                        //         right: 15,
+                        //         containerColor: AppColors.activeDotColor,
+                        //         textColor: AppColors.white,
+                        //         timeTextColor: AppColors.white,
+                        //         topLeft: Radius.circular(15),
+                        //         sentDateTime: message.sentDateTime,
+                        //         mainContent: Row(
+                        //           children: [
+                        //             IconButton(
+                        //               onPressed: (() async {}),
+                        //               icon: Icon(
+                        //                 isPlaying == true
+                        //                     ? Icons.cancel
+                        //                     : Icons.play_arrow,
+                        //               ),
+                        //             ),
+                        //             Expanded(
+                        //               child: Column(
+                        //                 children: [
+                        //                   Slider(
+                        //                     min: 0,
+                        //                     max: duration.inSeconds.toDouble(),
+                        //                     value: position.inSeconds.toDouble(),
+                        //                     onChanged: ((val) async {
+                        //                       position =
+                        //                           Duration(seconds: val.toInt());
+                        //                     }),
+                        //                   ),
+                        //                   Text(position.inSeconds.toString()),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       );
+                        //     } else {
+                        //       return Container();
+                        //     }
+                        //   }
+                        default:
+                          {
+                            if (message.isSentByMe == true) {
+                              return ChatBubble(
+                                message: message.content,
+                                alignment: Alignment.centerRight,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                right: 15,
+                                containerColor: AppColors.activeDotColor,
+                                textColor: AppColors.white,
+                                timeTextColor: AppColors.white,
+                                topLeft: Radius.circular(15),
+                                sentDateTime: message.sentDateTime,
+                              );
+                            } else {
+                              return ChatBubble(
+                                message: message.content,
+                                sentDateTime: message.sentDateTime,
+                                alignment: Alignment.centerLeft,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                left: 15,
+                                containerColor: AppColors.inactiveDotColor,
+                                textColor: AppColors.mainColor,
+                                timeTextColor: AppColors.mainColor,
+                                topRight: Radius.circular(15),
+                              );
+                            }
                           }
-                        }
-                    }
-                  }),
+                      }
+                    }),
+                  ),
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.transparent,
-                ),
-                padding: const EdgeInsets.only(
-                  top: 5,
-                  bottom: 5,
-                  left: 5,
-                  right: 5,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InputChatField(
-                        textColor: AppColors.white,
-                        visibility: false,
-                        minLines: 1,
-                        maxLines: 5,
-                        controller: _messageController,
-                        textInputType: TextInputType.multiline,
-                        hint: "Type message",
-                        fillColor: AppColors.activeDotColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                            width: 0,
-                            color: AppColors.transparent,
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.transparent,
+                  ),
+                  padding: const EdgeInsets.only(
+                    top: 5,
+                    bottom: 5,
+                    left: 5,
+                    right: 5,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        // duration: Duration(milliseconds: 200),
+                        // width: _messageController.text.trim().isNotEmpty
+                        //     ? MediaQuery.of(context).size.width - 65
+                        //     : MediaQuery.of(context).size.width - 10,
+                        child: InputChatField(
+                          textColor: AppColors.white,
+                          visibility: false,
+                          minLines: 1,
+                          maxLines: 5,
+                          controller: _messageController,
+                          textInputType: TextInputType.multiline,
+                          hint: "Type message",
+                          fillColor: AppColors.activeDotColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(
+                              width: 0,
+                              color: AppColors.transparent,
+                            ),
                           ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                            width: 0,
-                            color: AppColors.transparent,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(
+                              width: 0,
+                              color: AppColors.transparent,
+                            ),
                           ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                            width: 0,
-                            color: AppColors.transparent,
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(
+                              width: 0,
+                              color: AppColors.transparent,
+                            ),
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                            width: 0,
-                            color: AppColors.transparent,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(
+                              width: 0,
+                              color: AppColors.transparent,
+                            ),
                           ),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                            width: 0,
-                            color: AppColors.transparent,
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(
+                              width: 0,
+                              color: AppColors.transparent,
+                            ),
                           ),
-                        ),
-                        prefix: SuffixBtn(
-                          icon: emojiKeyboardOpen
-                              ? Icons.emoji_emotions
-                              : Icons.emoji_emotions_outlined,
-                          onTap: toggleEmojiKeyboard,
-                        ),
-                        suffix: SizedBox(
-                          height: 30,
-                          width: 85,
-                          child: Row(
-                            children: [
-                              Transform.rotate(
-                                angle: 0.8,
-                                child: SuffixBtn(
-                                  icon: Icons.attach_file_rounded,
+                          prefix: SuffixBtn(
+                            icon: emojiKeyboardOpen
+                                ? Icons.emoji_emotions
+                                : Icons.emoji_emotions_outlined,
+                            onTap: Platform.isIOS
+                                ? getEmojiKeyboardIos
+                                : toggleEmojiKeyboard,
+                          ),
+                          suffix: SizedBox(
+                            height: 30,
+                            width: 85,
+                            child: Row(
+                              children: [
+                                Transform.rotate(
+                                  angle: 0.8,
+                                  child: SuffixBtn(
+                                    icon: Icons.attach_file_rounded,
+                                    onTap: () {},
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                SuffixBtn(
+                                  icon: CupertinoIcons.camera,
                                   onTap: () {},
                                 ),
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              SuffixBtn(
-                                icon: CupertinoIcons.camera,
-                                onTap: () {},
-                              ),
-                            ],
+                              ],
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.only(
+                            left: 15,
+                            right: 15,
+                            top: 15,
+                            bottom: 15,
                           ),
                         ),
-                        contentPadding: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          top: 15,
-                          bottom: 15,
-                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    if (_messageController.text.trim().isNotEmpty)
+                      if (_messageController.text.trim().isNotEmpty)
+                        SizedBox(
+                          width: 5,
+                        ),
+                      // if (_messageController.text.trim().isNotEmpty)
                       GestureDetector(
                         onTap: (() {
                           messages.add(
@@ -464,9 +518,14 @@ class _ChatScreenState extends State<ChatScreen> {
                             curve: Curves.ease,
                           );
                         }),
-                        child: Container(
-                          width: 50,
-                          height: 50,
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          width: _messageController.text.trim().isNotEmpty
+                              ? 50
+                              : 0,
+                          height: _messageController.text.trim().isNotEmpty
+                              ? 50
+                              : 0,
                           decoration: BoxDecoration(
                             color: AppColors.activeButtonColor,
                             shape: BoxShape.circle,
@@ -474,20 +533,24 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: Icon(
                             Icons.send,
                             color: AppColors.white,
+                            size: _messageController.text.trim().isNotEmpty
+                                ? 30
+                                : 0,
                           ),
                         ),
                       )
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Offstage(
-                offstage: !emojiKeyboardOpen,
-                child: EmojiKeyBoard(
-                  textEditingController: _messageController,
-                  emailKeyboardOpen: emojiKeyboardOpen,
+                Offstage(
+                  offstage: !emojiKeyboardOpen,
+                  child: EmojiKeyBoard(
+                    textEditingController: _messageController,
+                    emailKeyboardOpen: emojiKeyboardOpen,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

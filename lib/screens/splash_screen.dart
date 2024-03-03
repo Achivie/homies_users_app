@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 import '../styles.dart';
 
@@ -13,8 +14,19 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool isAnimation = false;
+
   @override
   void initState() {
+    Timer(
+      const Duration(seconds: 1),
+      () {
+        setState(() {
+          isAnimation = true;
+        });
+      },
+    );
+
     Timer(
       const Duration(seconds: 2),
       () {
@@ -55,6 +67,14 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
           ),
+          AnimatedContainer(
+            duration: Duration(milliseconds: 100),
+            width: isAnimation ? 200 : 0,
+            height: isAnimation ? 70 : 0,
+            child: Lottie.asset(
+              "assets/splash-loading.json",
+            ),
+          )
         ],
       ),
     );
