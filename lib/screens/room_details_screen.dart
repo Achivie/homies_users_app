@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart' as Carousel;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -23,10 +23,10 @@ import 'booking_screen.dart';
 class RoomDetailsScreen extends StatefulWidget {
   const RoomDetailsScreen({
     Key? key,
-    required this.uid,
+    required this.roomID,
   }) : super(key: key);
 
-  final String uid;
+  final String roomID;
 
   @override
   State<RoomDetailsScreen> createState() => _RoomDetailsScreenState();
@@ -36,7 +36,7 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
   int selectedRating = 0, selectedPage = 0, currImage = 0;
   double _rating = 1.0;
   late NumberPaginatorController numberPaginatorController;
-  late CarouselController carouselController;
+  late Carousel.CarouselController carouselController;
   late TextEditingController _commentsTextController;
   Position? position;
   bool isActiveBooking = false;
@@ -88,7 +88,7 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
   void initState() {
     numberPaginatorController = NumberPaginatorController();
     _commentsTextController = TextEditingController();
-    carouselController = CarouselController();
+    carouselController = Carousel.CarouselController();
     super.initState();
   }
 
@@ -131,7 +131,7 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                         Navigator.pushNamed(
                           context,
                           AppKeys.bookingRouteKey,
-                          arguments: widget.uid,
+                          arguments: widget.roomID,
                         );
                       }),
                       child: Container(
@@ -248,9 +248,9 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                   child: Column(
                     children: [
                       Expanded(
-                        child: CarouselSlider(
+                        child: Carousel.CarouselSlider(
                           carouselController: carouselController,
-                          options: CarouselOptions(
+                          options: Carousel.CarouselOptions(
                             height: 420.0,
                             enableInfiniteScroll: false,
                             enlargeCenterPage: true,
@@ -465,7 +465,7 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                                 await openMap(
                                   latitude: position!.latitude,
                                   longitude: position!.longitude,
-                                  label: widget.uid,
+                                  label: widget.roomID,
                                 );
                               }),
                               icon: Icon(
@@ -762,8 +762,8 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                     label: _rating.toString(),
                     min: 1.0,
                     max: 5.0,
-                    divisions:
-                        8, // Adjust the number of divisions based on your needs
+                    divisions: 8,
+                    // Adjust the number of divisions based on your needs
                     onChanged: (value) {
                       setState(() {
                         // Round the value to the nearest 0.5

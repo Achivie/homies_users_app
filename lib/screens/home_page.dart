@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homies/constants.dart';
+import 'package:homies/screens/room_details_screen.dart';
+import 'package:homies/screens/search_screen.dart';
 import 'package:homies/styles.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,7 +42,7 @@ class _HomePageState extends State<HomePage>
         physics: AppConstants.scrollPhysics,
         slivers: [
           SliverAppBar(
-            toolbarHeight: 160,
+            toolbarHeight: 90,
             backgroundColor: AppColors.mainColor,
             leading: Container(),
             flexibleSpace: SafeArea(
@@ -51,132 +54,111 @@ class _HomePageState extends State<HomePage>
                   top: 15,
                   bottom: 5,
                 ),
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "Hi ",
-                                  style: TextStyle(
-                                    color: AppColors.white,
-                                  ),
-                                ),
-                                Hero(
-                                  tag: AppKeys.nameHeroKey,
-                                  child: Text(
-                                    "Rupam",
-                                    style: TextStyle(
-                                      color: AppColors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  ", you're at",
-                                  style: TextStyle(
-                                    color: AppColors.white,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              "Hi ",
+                              style: TextStyle(
+                                color: AppColors.white,
+                              ),
                             ),
-                            SizedBox(
-                              height: 10,
+                            Hero(
+                              tag: AppKeys.nameHeroKey,
+                              child: Text(
+                                "Rupam",
+                                style: TextStyle(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width - 80,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_on_outlined,
-                                    color: AppColors.white,
-                                    size: 30,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      (widget.placemarks != null)
-                                          ? "${widget.placemarks![0].street}, ${widget.placemarks![0].subLocality!}, ${widget.placemarks![0].administrativeArea}"
-                                          : "Loading...",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        color: AppColors.white,
-
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                            Text(
+                              ", you're at",
+                              style: TextStyle(
+                                color: AppColors.white,
                               ),
                             ),
                           ],
                         ),
-                        Hero(
-                          tag:
-                              "https://images.pexels.com/photos/19804055/pexels-photo-19804055/free-photo-of-xoan.jpeg",
-                          child: GestureDetector(
-                            onTap: (() {
-                              Navigator.pushNamed(
-                                  context, AppKeys.profileRouteKey);
-                            }),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundImage: CachedNetworkImageProvider(
-                                  "https://images.pexels.com/photos/19804055/pexels-photo-19804055/free-photo-of-xoan.jpeg"),
-                            ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 130,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: AppColors.white,
+                                size: 30,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  (widget.placemarks != null)
+                                      ? "${widget.placemarks![0].street}, ${widget.placemarks![0].subLocality!}, ${widget.placemarks![0].administrativeArea}"
+                                      : "Loading...",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    // Expanded(
-                    //   child: InputTextFormField(
-                    //     controller: _searchInputController,
-                    //     textInputType: TextInputType.text,
-                    //     hint: "Searching for",
-                    //     textInputAction: TextInputAction.search,
-                    //     suffix: Icon(
-                    //       Icons.search,
-                    //       color: AppColors.mainColor,
-                    //     ),
-                    //   ),
-                    // ),
-
-                    GestureDetector(
-                      onTap: (() {
-                        Navigator.pushNamed(context, AppKeys.searchRouteKey);
-                      }),
-                      child: Container(
-                        height: 50,
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(15),
+                    OpenContainer(
+                        transitionDuration: const Duration(
+                          milliseconds: 400,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Looking for",
-                              style: TextStyle(
-                                color: AppColors.hintTextColor,
+                        tappable: false,
+                        closedElevation: 0,
+                        openElevation: 0,
+                        closedColor: AppColors.transparent,
+                        openColor: AppColors.transparent,
+                        closedBuilder: ((closedCtx, openContainer) {
+                          return Container(
+                            height: 45,
+                            width: 45,
+                            decoration: BoxDecoration(
+                              color: AppColors.white.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              onPressed: openContainer,
+                              icon: Icon(
+                                Icons.search,
+                                color: AppColors.white,
                               ),
                             ),
-                            Icon(
-                              Icons.search,
-                              color: AppColors.mainColor,
-                            ),
-                          ],
+                          );
+                        }),
+                        openBuilder: ((openCtx, _) {
+                          return SearchScreen();
+                        })),
+                    Hero(
+                      tag:
+                          "https://images.pexels.com/photos/19804055/pexels-photo-19804055/free-photo-of-xoan.jpeg",
+                      child: GestureDetector(
+                        onTap: (() {
+                          Navigator.pushNamed(context, AppKeys.profileRouteKey);
+                        }),
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundImage: CachedNetworkImageProvider(
+                              "https://images.pexels.com/photos/19804055/pexels-photo-19804055/free-photo-of-xoan.jpeg"),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -248,155 +230,21 @@ class _HomePageState extends State<HomePage>
                 scrollPhysics: AppConstants.scrollPhysics,
               ),
               items: [1, 2, 3, 4, 5].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return GestureDetector(
-                      onTap: (() {
-                        Navigator.of(context).pushNamed(
-                          AppKeys.roomDetailsRouteKey,
-                          arguments: "123456",
-                        );
-                      }),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: AppColors.mainColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Stack(
-                          children: [
-                            CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              imageUrl:
-                                  "https://images.pexels.com/photos/11509450/pexels-photo-11509450.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
-                            Container(
-                              alignment: Alignment.bottomCenter,
-                              padding: EdgeInsets.only(
-                                left: 25,
-                                right: 15,
-                                bottom: 25,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    AppColors.transparent,
-                                    AppColors.transparent,
-                                    AppColors.mainColor,
-                                  ],
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Service Room",
-                                        style: GoogleFonts.ptSerif(
-                                          textStyle: TextStyle(
-                                            color: AppColors.white,
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: (() {}),
-                                        icon: Icon(
-                                          Icons.favorite_border_rounded,
-                                          color: AppColors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 10,
-                                            horizontal: 20,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            border: Border.all(
-                                              color: AppColors.white,
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              "\$12.50/1 hour",
-                                              style: TextStyle(
-                                                color: AppColors.white,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Distance: 1.5km",
-                                              style: TextStyle(
-                                                color: AppColors.white,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                            Text(
-                                              "from College".toLowerCase(),
-                                              style: TextStyle(
-                                                color: AppColors.white,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
+                return OpenContainer(
+                    transitionDuration: const Duration(
+                      milliseconds: 400,
+                    ),
+                    tappable: true,
+                    closedElevation: 0,
+                    openElevation: 0,
+                    closedColor: AppColors.transparent,
+                    openColor: AppColors.transparent,
+                    closedBuilder: ((closedCtx, openContainer) {
+                      return HomeCarouselContainer();
+                    }),
+                    openBuilder: ((openCtx, _) {
+                      return RoomDetailsScreen(roomID: "123456");
+                    }));
               }).toList(),
             ),
           ),
@@ -511,152 +359,172 @@ class _HomePageState extends State<HomePage>
                 scrollDirection: Axis.horizontal,
                 itemCount: 5,
                 itemBuilder: ((ctx, index) {
-                  return Container(
-                    width: 239,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.inactiveDotColor,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CachedNetworkImage(
-                          height: 155,
-                          fit: BoxFit.cover,
-                          imageBuilder: (context, imageProvider) => Stack(
-                            children: [
-                              Container(
-                                // margin: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                  right: 30,
-                                  child: Container(
-                                    height: 36,
-                                    width: 35,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          AppColors.mainColor.withOpacity(0.4),
-                                      borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.favorite_border_rounded,
-                                        color: AppColors.inactiveDotColor,
-                                      ),
-                                    ),
-                                  )),
-                            ],
+                  return OpenContainer(
+                      transitionDuration: const Duration(
+                        milliseconds: 400,
+                      ),
+                      tappable: true,
+                      closedElevation: 0,
+                      openElevation: 0,
+                      closedColor: AppColors.transparent,
+                      openColor: AppColors.transparent,
+                      closedBuilder: ((closedCtx, openContainer) {
+                        return Container(
+                          width: 239,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.inactiveDotColor,
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          imageUrl:
-                              "https://images.pexels.com/photos/11509450/pexels-photo-11509450.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  CircularProgressIndicator(
-                                      value: downloadProgress.progress),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            "Minimalism Room",
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.ptSerif(
-                              color: AppColors.mainColor,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 20,
+                              CachedNetworkImage(
+                                height: 155,
+                                fit: BoxFit.cover,
+                                imageBuilder: (context, imageProvider) => Stack(
+                                  children: [
+                                    Container(
+                                      // margin: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                        right: 30,
+                                        child: Container(
+                                          height: 36,
+                                          width: 35,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.mainColor
+                                                .withOpacity(0.4),
+                                            borderRadius: BorderRadius.only(
+                                              bottomRight: Radius.circular(10),
+                                              bottomLeft: Radius.circular(10),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.favorite_border_rounded,
+                                              color: AppColors.inactiveDotColor,
+                                            ),
+                                          ),
+                                        )),
+                                  ],
                                 ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
+                                imageUrl:
+                                    "https://images.pexels.com/photos/11509450/pexels-photo-11509450.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        CircularProgressIndicator(
+                                            value: downloadProgress.progress),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(
+                                  "Minimalism Room",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.ptSerif(
                                     color: AppColors.mainColor,
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    "\$12.50/1 hour",
-                                    style: TextStyle(
-                                      color: AppColors.mainColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
                                   ),
                                 ),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "D Block",
-                                    style: TextStyle(
-                                      color: AppColors.mainColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 20,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(
+                                          color: AppColors.mainColor,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "\$12.50/1 hour",
+                                          style: TextStyle(
+                                            color: AppColors.mainColor,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Newtown",
-                                    style: TextStyle(
-                                      color: AppColors.mainColor,
-                                      fontSize: 12,
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "D Block",
+                                          style: TextStyle(
+                                            color: AppColors.mainColor,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Newtown",
+                                          style: TextStyle(
+                                            color: AppColors.mainColor,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    DetailWidget(
+                                      icon: Icons.bed,
+                                      count: "1",
+                                      iconColor: AppColors.mainColor,
+                                    ),
+                                    DetailWidget(
+                                      icon: Icons.bathtub_outlined,
+                                      count: "1",
+                                      iconColor: AppColors.mainColor,
+                                    ),
+                                    DetailWidget(
+                                      icon: Icons.star,
+                                      count: "5.0",
+                                      iconColor: AppColors.orange,
+                                    ),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              DetailWidget(
-                                icon: Icons.bed,
-                                count: "1",
-                                iconColor: AppColors.mainColor,
-                              ),
-                              DetailWidget(
-                                icon: Icons.bathtub_outlined,
-                                count: "1",
-                                iconColor: AppColors.mainColor,
-                              ),
-                              DetailWidget(
-                                icon: Icons.star,
-                                count: "5.0",
-                                iconColor: AppColors.orange,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  );
+                        );
+                      }),
+                      openBuilder: ((openCtx, _) {
+                        return RoomDetailsScreen(roomID: "123456");
+                      }));
                 }),
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(
@@ -687,121 +555,297 @@ class _HomePageState extends State<HomePage>
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 115,
-                  margin: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  padding: EdgeInsets.only(
-                    left: 10,
-                    top: 10,
-                    bottom: 10,
-                    right: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.inactiveDotColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    children: [
-                      CachedNetworkImage(
-                        width: 91,
-                        height: 91,
-                        fit: BoxFit.cover,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            image: DecorationImage(
-                              image: imageProvider,
+                return OpenContainer(
+                    transitionDuration: const Duration(
+                      milliseconds: 400,
+                    ),
+                    tappable: true,
+                    closedElevation: 0,
+                    openElevation: 0,
+                    closedColor: AppColors.transparent,
+                    openColor: AppColors.transparent,
+                    closedBuilder: ((closedCtx, openContainer) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 115,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                        padding: EdgeInsets.only(
+                          left: 10,
+                          top: 10,
+                          bottom: 10,
+                          right: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.inactiveDotColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              width: 91,
+                              height: 91,
                               fit: BoxFit.cover,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              imageUrl:
+                                  "https://images.pexels.com/photos/11509450/pexels-photo-11509450.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(
+                                          value: downloadProgress.progress),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Minimalism Room",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.ptSerif(
+                                      color: AppColors.mainColor,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 7,
+                                          horizontal: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          border: Border.all(
+                                            color: AppColors.mainColor,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "\$12.50/1 hour",
+                                          style: TextStyle(
+                                            color: AppColors.mainColor,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        "Newtown",
+                                        style: TextStyle(
+                                          color: AppColors.mainColor,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      DetailWidget(
+                                        icon: Icons.bed,
+                                        count: "1",
+                                        iconColor: AppColors.mainColor,
+                                      ),
+                                      DetailWidget(
+                                        icon: Icons.bathtub_outlined,
+                                        count: "1",
+                                        iconColor: AppColors.mainColor,
+                                      ),
+                                      DetailWidget(
+                                        icon: Icons.star,
+                                        count: "5.0",
+                                        iconColor: AppColors.orange,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+                    openBuilder: ((openCtx, _) {
+                      return RoomDetailsScreen(roomID: "123456");
+                    }));
+              },
+              childCount: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HomeCarouselContainer extends StatefulWidget {
+  const HomeCarouselContainer({
+    super.key,
+  });
+
+  @override
+  State<HomeCarouselContainer> createState() => _HomeCarouselContainerState();
+}
+
+class _HomeCarouselContainerState extends State<HomeCarouselContainer> {
+  bool liked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: AppColors.mainColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Stack(
+        children: [
+          CachedNetworkImage(
+            fit: BoxFit.cover,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            imageUrl:
+                "https://images.pexels.com/photos/11509450/pexels-photo-11509450.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                Center(
+              child:
+                  CircularProgressIndicator(value: downloadProgress.progress),
+            ),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            padding: EdgeInsets.only(
+              left: 25,
+              right: 15,
+              bottom: 25,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.transparent,
+                  AppColors.transparent,
+                  AppColors.mainColor,
+                ],
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Service Room",
+                      style: GoogleFonts.ptSerif(
+                        textStyle: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: (() {
+                        setState(() {
+                          liked = !liked;
+                        });
+                      }),
+                      icon: Icon(
+                        liked
+                            ? Icons.favorite_outlined
+                            : Icons.favorite_border_rounded,
+                        color: liked ? AppColors.red : AppColors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: AppColors.white,
+                            width: 1,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "\$12.50/1 hour",
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ),
-                        imageUrl:
-                            "https://images.pexels.com/photos/11509450/pexels-photo-11509450.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                CircularProgressIndicator(
-                                    value: downloadProgress.progress),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
-                      SizedBox(
-                        width: 10,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Distance: 1.5km",
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            "from College".toLowerCase(),
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Minimalism Room",
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.ptSerif(
-                                color: AppColors.mainColor,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 7,
-                                    horizontal: 12,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    border: Border.all(
-                                      color: AppColors.mainColor,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "\$12.50/1 hour",
-                                    style: TextStyle(
-                                      color: AppColors.mainColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  "Newtown",
-                                  style: TextStyle(
-                                    color: AppColors.mainColor,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                DetailWidget(
-                                  icon: Icons.bed,
-                                  count: "1",
-                                  iconColor: AppColors.mainColor,
-                                ),
-                                DetailWidget(
-                                  icon: Icons.bathtub_outlined,
-                                  count: "1",
-                                  iconColor: AppColors.mainColor,
-                                ),
-                                DetailWidget(
-                                  icon: Icons.star,
-                                  count: "5.0",
-                                  iconColor: AppColors.orange,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
                     ],
                   ),
-                );
-              },
-              childCount: 10,
+                ),
+              ],
             ),
           ),
         ],
@@ -852,7 +896,9 @@ class CustomTabBarItems extends StatelessWidget {
     super.key,
     required this.label,
   });
+
   final String label;
+
   @override
   Widget build(BuildContext context) {
     return Container(

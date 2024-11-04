@@ -55,7 +55,7 @@ dependencies:
   number_paginator:
   grouped_list:
   flutter_chat_ui:
-#  record_mp3:
+  #  record_mp3:
   path_provider:
   simple_animation_progress_bar:
   audioplayers:
@@ -76,6 +76,7 @@ dependencies:
   readmore:
   badges:
   keyboard_emoji_picker:
+  animations:
 
 dev_dependencies:
   flutter_test:

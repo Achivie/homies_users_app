@@ -56,7 +56,7 @@ class RouteGenerator {
           final uid = settings.arguments as String;
           return MaterialPageRoute(
             builder: (_) => RoomDetailsScreen(
-              uid: uid,
+              roomID: uid,
             ),
           );
         }

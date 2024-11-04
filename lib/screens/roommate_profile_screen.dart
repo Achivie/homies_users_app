@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +26,7 @@ class RoommateProfileScreen extends StatefulWidget {
 class _RoommateProfileScreenState extends State<RoommateProfileScreen> {
   List<String> otherPics = [];
   var top = 0.0;
+
   @override
   void initState() {
     otherPics.addAll(widget.roommateModel.otherPics);
@@ -43,178 +46,115 @@ class _RoommateProfileScreenState extends State<RoommateProfileScreen> {
             backgroundColor: AppColors.mainColor,
             floating: true,
             pinned: true,
-            leadingWidth: 30,
-            leading: IconButton(
-              onPressed: (() {
+            centerTitle: false,
+            leadingWidth: 60,
+            leading: CustomIconButton(
+              onTap: (() {
                 Navigator.pop(context);
               }),
-              icon: Icon(
-                Icons.arrow_back_rounded,
-                color: AppColors.white,
-              ),
+              icon: Icons.arrow_back_rounded,
+              iconColor: AppColors.white,
             ),
-            actions: [
-              IconButton(
-                onPressed: (() {}),
-                icon: Icon(
-                  Icons.thumb_up_off_alt_rounded,
-                  color: AppColors.red,
-                ),
-              ),
-              IconButton(
-                onPressed: (() {}),
-                icon: Icon(
-                  Icons.message_rounded,
-                  color: AppColors.white,
-                ),
-              ),
-              IconButton(
-                onPressed: (() {}),
-                icon: Icon(
-                  Icons.star_rate_rounded,
-                  color: AppColors.secondaryText,
-                ),
-              ),
-            ],
             expandedHeight: 350,
             flexibleSpace: LayoutBuilder(
               builder: ((ctx, constraints) {
                 top = constraints.biggest.height;
+
                 return FlexibleSpaceBar(
-                  title: (MediaQuery.of(context).padding.top + kToolbarHeight ==
-                          top)
-                      ? Text(
-                          widget.roommateModel.name,
-                          style: GoogleFonts.ptSerif(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.white,
-                            fontSize: 20,
-                          ),
-                        )
-                      : null,
+                  centerTitle: false,
+                  // title: (MediaQuery.of(context).padding.top + kToolbarHeight ==
+                  //         top)
+                  //     ? Text(
+                  //         widget.roommateModel.name,
+                  //         style: GoogleFonts.ptSerif(
+                  //           fontWeight: FontWeight.bold,
+                  //           color: AppColors.white,
+                  //           fontSize: 20,
+                  //         ),
+                  //       )
+                  //     : Container(
+                  //         decoration: BoxDecoration(
+                  //           color: AppColors.mainColor.withOpacity(0.5),
+                  //         ),
+                  //         child: Text(
+                  //           widget.roommateModel.name,
+                  //           style: GoogleFonts.ptSerif(
+                  //             fontWeight: FontWeight.bold,
+                  //             color: AppColors.white,
+                  //             fontSize: 20,
+                  //           ),
+                  //         ),
+                  //       ),
                   stretchModes: const <StretchMode>[],
                   background: GestureDetector(
                     onTap: (() {
                       Navigator.pushNamed(context, AppKeys.imagePreviewRouteKey,
                           arguments: widget.roommateModel.profile);
                     }),
-                    child: Stack(
-                      children: [
-                        Hero(
-                          tag: widget.roommateModel.profile,
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageBuilder: (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                // borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            imageUrl: widget.roommateModel.profile,
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) =>
-                                    CircularProgressIndicator(
-                                        value: downloadProgress.progress),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                        ),
-                        Container(
+                    child: Hero(
+                      tag: widget.roommateModel.profile,
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppColors.transparent,
-                                AppColors.transparent,
-                                AppColors.mainColor,
-                              ],
+                            // borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
-                        Container(
-                          height: kToolbarHeight + 35,
-                          width: kToolbarHeight - 10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(30),
-                              topRight: Radius.circular(30),
-                            ),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppColors.transparent,
-                                AppColors.transparent,
-                                AppColors.mainColor.withOpacity(0.7),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            height: kToolbarHeight + 35,
-                            width: kToolbarHeight * 2.7,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                topRight: Radius.circular(30),
-                              ),
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColors.transparent,
-                                  AppColors.transparent,
-                                  AppColors.mainColor.withOpacity(0.7),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (MediaQuery.of(context).padding.top +
-                                kToolbarHeight !=
-                            top)
-                          Positioned(
-                            bottom: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 25,
-                                right: 25,
-                                bottom: 15,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.roommateModel.name,
-                                    style: GoogleFonts.ptSerif(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.white,
-                                      fontSize: 35,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    widget.roommateModel.work,
-                                    style: TextStyle(
-                                      color: AppColors.white.withOpacity(0.8),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
+                        imageUrl: widget.roommateModel.profile,
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                CircularProgressIndicator(
+                                    value: downloadProgress.progress),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
                     ),
                   ),
                 );
               }),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 25,
+                right: 25,
+                top: 15,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      "widget.roommateModel.name",
+                      style: GoogleFonts.ptSerif(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.mainColor,
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      CustomIconButton(
+                        onTap: (() {}),
+                        icon: Icons.thumb_up_off_alt_rounded,
+                        iconColor: AppColors.red,
+                        containerColor: AppColors.transparent,
+                      ),
+                      CustomIconButton(
+                        onTap: (() {}),
+                        icon: Icons.message_rounded,
+                        iconColor: AppColors.bottomNaviBarDark.withOpacity(0.5),
+                        containerColor: AppColors.transparent,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           const SliverToBoxAdapter(
@@ -394,6 +334,41 @@ class _RoommateProfileScreenState extends State<RoommateProfileScreen> {
                 SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomIconButton extends StatelessWidget {
+  const CustomIconButton({
+    super.key,
+    required this.onTap,
+    required this.icon,
+    required this.iconColor,
+    this.containerColor,
+  });
+
+  final VoidCallback onTap;
+  final IconData icon;
+  final Color iconColor;
+  final Color? containerColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: containerColor ?? AppColors.mainColor.withOpacity(0.3),
+      ),
+      child: IconButton(
+        onPressed: onTap,
+        icon: Icon(
+          icon,
+          color: iconColor,
+        ),
       ),
     );
   }

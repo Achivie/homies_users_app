@@ -1,11 +1,13 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homies/constants.dart';
+import 'package:homies/screens/room_details_screen.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../models/chip_data_model.dart';
@@ -55,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     for (var element in rangeList) {
-      log(element.key.toString());
+      // log(element.key.toString());
     }
     super.initState();
   }
@@ -72,7 +74,7 @@ class _SearchScreenState extends State<SearchScreen> {
       focused = true;
     }
     setState(() {});
-    log(focused.toString());
+    // log(focused.toString());
   }
 
   @override
@@ -101,75 +103,74 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            RefreshIndicator(
-              onRefresh: (() async {}),
-              child: CustomScrollView(
-                physics: AppConstants.scrollPhysics,
-                slivers: [
-                  SliverAppBar(
-                    leading: Container(),
-                    toolbarHeight: 81,
-                    pinned: true,
-                    flexibleSpace: Container(
-                      padding: EdgeInsets.only(
-                        left: 15,
-                        right: 15,
-                        top: 10,
-                        bottom: 20,
+        child: RefreshIndicator(
+          onRefresh: (() async {}),
+          child: CustomScrollView(
+            physics: AppConstants.scrollPhysics,
+            slivers: [
+              SliverAppBar(
+                leading: Container(),
+                toolbarHeight: 81,
+                pinned: true,
+                flexibleSpace: Container(
+                  padding: EdgeInsets.only(
+                    left: 15,
+                    right: 15,
+                    top: 10,
+                    bottom: 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.mainColor,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: InputTextFormField(
+                          focusNode: _focus,
+                          controller: _searchInputController,
+                          textInputType: TextInputType.text,
+                          hint: "Searching for",
+                          textInputAction: TextInputAction.search,
+                          suffix: Icon(
+                            Icons.search,
+                            color: AppColors.mainColor,
+                          ),
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: AppColors.mainColor,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: InputTextFormField(
-                              focusNode: _focus,
-                              controller: _searchInputController,
-                              textInputType: TextInputType.text,
-                              hint: "Searching for",
-                              textInputAction: TextInputAction.search,
-                              suffix: Icon(
-                                Icons.search,
-                                color: AppColors.mainColor,
+                      if (focused)
+                        SizedBox(
+                          width: 10,
+                        ),
+                      if (focused)
+                        GestureDetector(
+                          onTap: (() {
+                            setState(() {
+                              showFilters = !showFilters;
+                            });
+                          }),
+                          child: Container(
+                            height: 52,
+                            width: 52,
+                            decoration: BoxDecoration(
+                              color: AppColors.secondaryText,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                showFilters ? Icons.clear : Icons.sort,
+                                color: AppColors.white,
                               ),
                             ),
                           ),
-                          if (focused)
-                            SizedBox(
-                              width: 10,
-                            ),
-                          if (focused)
-                            GestureDetector(
-                              onTap: (() {
-                                setState(() {
-                                  showFilters = !showFilters;
-                                });
-                              }),
-                              child: Container(
-                                height: 52,
-                                width: 52,
-                                decoration: BoxDecoration(
-                                  color: AppColors.secondaryText,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.sort,
-                                    color: AppColors.white,
-                                  ),
-                                ),
-                              ),
-                            )
-                        ],
-                      ),
-                    ),
+                        )
+                    ],
                   ),
-                  if (!focused)
-                    SliverToBoxAdapter(
-                      child: Container(
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: !focused || showFilters
+                    ? AnimatedContainer(
+                        duration: Duration(milliseconds: 400),
                         margin: const EdgeInsets.only(
                           left: 25,
                           right: 25,
@@ -630,21 +631,39 @@ class _SearchScreenState extends State<SearchScreen> {
                                 },
                               ).toList(),
                             ),
+                            if (!focused)
+                              const Padding(
+                                padding: EdgeInsets.only(
+                                  top: 10,
+                                ),
+                                child: Text(
+                                  "Recommended",
+                                  style: TextStyle(
+                                    color: AppColors.mainColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
-                      ),
-                    ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return GestureDetector(
-                          onTap: (() {
-                            Navigator.of(context).pushNamed(
-                              AppKeys.roomDetailsRouteKey,
-                              arguments: "123456",
-                            );
-                          }),
-                          child: RoomListContainer(
+                      )
+                    : null,
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return OpenContainer(
+                        transitionDuration: const Duration(
+                          milliseconds: 400,
+                        ),
+                        tappable: true,
+                        closedElevation: 0,
+                        openElevation: 0,
+                        closedColor: AppColors.transparent,
+                        openColor: AppColors.transparent,
+                        closedBuilder: ((closedCtx, openContainer) {
+                          return RoomListContainer(
                             image:
                                 "https://images.pexels.com/photos/11509450/pexels-photo-11509450.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
                             roomName: "Minimalism Room",
@@ -653,493 +672,17 @@ class _SearchScreenState extends State<SearchScreen> {
                             bedCount: 1,
                             bathroomCount: 1,
                             rating: 1.0,
-                          ),
-                        );
-                      },
-                      childCount: 10,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (showFilters)
-              Positioned(
-                right:
-                    (showFilters ? 10 : MediaQuery.of(context).size.width) * -1,
-                top: MediaQuery.of(context).size.height / 6.5,
-                height: MediaQuery.of(context).size.height / 2,
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      right: 25,
-                      left: 10,
-                      bottom: 10,
-                    ),
-                    margin: const EdgeInsets.only(
-                      left: 15,
-                      bottom: 10,
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: AppColors.hintTextColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        bottomLeft: Radius.circular(20),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(
-                            top: 20,
-                            bottom: 15,
-                          ),
-                          child: Text(
-                            "Sort price by",
-                            style: TextStyle(
-                              color: AppColors.mainColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        DropdownButtonFormField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: AppColors.inactiveDotColor,
-                            counterText: "",
-                            prefixIcon: const Icon(
-                              Icons.work,
-                              color: AppColors.mainColor,
-                            ),
-                            prefixStyle: const TextStyle(
-                              color: AppColors.mainColor,
-                              fontSize: 16,
-                            ),
-                            hintStyle: TextStyle(
-                              color: AppColors.hintTextColor,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: AppColors.white,
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                width: 1,
-                                color: AppColors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                width: 1,
-                                color: AppColors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            contentPadding: const EdgeInsets.only(
-                              left: 15,
-                              right: 15,
-                            ),
-                          ),
-                          style: const TextStyle(
-                            color: AppColors.mainColor,
-                            fontSize: 16,
-                          ),
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: AppColors.mainColor,
-                          ),
-                          enableFeedback: true,
-                          elevation: 5,
-                          dropdownColor: AppColors.inactiveDotColor,
-                          borderRadius: BorderRadius.circular(15),
-                          value: selectedSortByType,
-                          items: const [
-                            DropdownMenuItem(
-                              child: Text("Hourly"),
-                              value: "Hourly",
-                            ),
-                            DropdownMenuItem(
-                              child: Text("Daily"),
-                              value: "Daily",
-                            ),
-                            DropdownMenuItem(
-                              child: Text("Weekly"),
-                              value: "Weekly",
-                            ),
-                            DropdownMenuItem(
-                              child: Text("Monthly"),
-                              value: "Monthly",
-                            ),
-                          ],
-                          onChanged: (String? value) {
-                            setState(() {
-                              selectedSortByType = value ?? "";
-                            });
-                          },
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(
-                            left: 15,
-                            right: 15,
-                            top: 20,
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          height: 200,
-                          decoration: const BoxDecoration(
-                            color: AppColors.transparent,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(50),
-                              bottomRight: Radius.circular(50),
-                            ),
-                          ),
-                          child: AspectRatio(
-                            aspectRatio: 2,
-                            child: BarChart(
-                              BarChartData(
-                                barTouchData: barTouchData,
-                                titlesData: buildTitleDate(),
-                                borderData: borderData,
-                                barGroups: rangeList
-                                    .map(
-                                      (e) => BarChartGroupData(
-                                        x: e.key,
-                                        barRods: [
-                                          BarChartRodData(
-                                            toY: e.key == 0
-                                                ? 0
-                                                : e.val.toDouble(),
-                                            color: ((e.key >= _values.start) &&
-                                                    (e.key <= _values.end))
-                                                ? AppColors.activeDotColor
-                                                : AppColors.inactiveDotColor,
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    .toList(),
-                                gridData: const FlGridData(show: false),
-                                alignment: BarChartAlignment.spaceAround,
-                                maxY: maxY.toDouble(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4, right: 3),
-                          child: SfRangeSlider(
-                            min: 0,
-                            max: 200,
-                            interval: 20,
-                            inactiveColor: AppColors.inactiveSliderColor,
-                            activeColor: AppColors.secondaryText,
-                            stepSize: 20,
-                            onChanged: (SfRangeValues val) {
-                              setState(() {
-                                _values = val;
-                              });
-                            },
-                            values: _values,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 24,
-                            right: 17,
-                            bottom: 20,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                (_values.start.toDouble().toInt()).toString(),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Text(
-                                (_values.end.toDouble().toInt()).toString(),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(
-                            bottom: 15,
-                          ),
-                          child: Text(
-                            "Distance",
-                            style: TextStyle(
-                              color: AppColors.mainColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        DropdownButtonFormField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: AppColors.inactiveDotColor,
-                            prefixIcon: const Icon(
-                              Icons.work,
-                              color: AppColors.mainColor,
-                            ),
-                            prefixStyle: const TextStyle(
-                              color: AppColors.mainColor,
-                              fontSize: 16,
-                            ),
-                            hintStyle: TextStyle(
-                              color: AppColors.hintTextColor,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: AppColors.white,
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                width: 1,
-                                color: AppColors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                width: 1,
-                                color: AppColors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            contentPadding: const EdgeInsets.only(
-                              left: 15,
-                              right: 15,
-                            ),
-                          ),
-                          style: const TextStyle(
-                            color: AppColors.mainColor,
-                            fontSize: 16,
-                          ),
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: AppColors.mainColor,
-                          ),
-                          enableFeedback: true,
-                          elevation: 5,
-                          dropdownColor: AppColors.inactiveDotColor,
-                          borderRadius: BorderRadius.circular(15),
-                          value: selectedSortByDistance,
-                          items: const [
-                            DropdownMenuItem(
-                              child: Text("Under 1km"),
-                              value: "1km",
-                            ),
-                            DropdownMenuItem(
-                              child: Text("Under 5km"),
-                              value: "5km",
-                            ),
-                            DropdownMenuItem(
-                              child: Text("Under 10km"),
-                              value: "10km",
-                            ),
-                            DropdownMenuItem(
-                              child: Text("Under 15km"),
-                              value: "15km",
-                            ),
-                          ],
-                          onChanged: (String? value) {
-                            setState(() {
-                              selectedSortByDistance = value ?? "";
-                            });
-                          },
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(
-                            top: 20,
-                            bottom: 15,
-                          ),
-                          child: Text(
-                            "Rating",
-                            style: TextStyle(
-                              color: AppColors.mainColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Wrap(
-                          runSpacing: 10,
-                          spacing: 10,
-                          children: [
-                            ChipData(
-                              label: "All",
-                              key: 0,
-                            ),
-                            ChipData(
-                              label: "5",
-                              icon: Icons.star,
-                              key: 5,
-                            ),
-                            ChipData(
-                              label: "4",
-                              icon: Icons.star,
-                              key: 4,
-                            ),
-                            ChipData(
-                              label: "3",
-                              icon: Icons.star,
-                              key: 3,
-                            ),
-                            ChipData(
-                              label: "2",
-                              icon: Icons.star,
-                              key: 2,
-                            ),
-                            ChipData(
-                              label: "1",
-                              icon: Icons.star,
-                              key: 1,
-                            ),
-                          ].map(
-                            (chip) {
-                              return InputChip(
-                                labelPadding: EdgeInsets.all(4),
-                                avatar: (chip.icon != null)
-                                    ? Icon(
-                                        chip.icon,
-                                        color: AppColors.secondaryText,
-                                        size: 20,
-                                      )
-                                    : null,
-                                onPressed: (() {
-                                  selectedRating = chip.key;
-                                  setState(() {});
-                                }),
-                                label: Text(chip.label),
-                                labelStyle: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: (chip.key == selectedRating)
-                                      ? AppColors.activeDotColor
-                                      : AppColors.mainColor,
-                                ),
-                                side: BorderSide.none,
-                                backgroundColor: (chip.key == selectedRating)
-                                    ? AppColors.inactiveDotColor
-                                    : AppColors.cardColorLight,
-                              );
-                            },
-                          ).toList(),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(
-                            top: 20,
-                            bottom: 15,
-                          ),
-                          child: Text(
-                            "Facilities",
-                            style: TextStyle(
-                              color: AppColors.mainColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Wrap(
-                          runSpacing: 10,
-                          spacing: 10,
-                          children: [
-                            ChipData(
-                              label: "All",
-                              key: 0,
-                            ),
-                            ChipData(
-                              label: "Elevator",
-                              icon: Icons.elevator_outlined,
-                              key: 1,
-                            ),
-                            ChipData(
-                              label: "Hot Water",
-                              icon: Icons.water_drop_outlined,
-                              key: 2,
-                            ),
-                            ChipData(
-                              label: "Cooking Place",
-                              icon: Icons.microwave,
-                              key: 3,
-                            ),
-                            ChipData(
-                              label: "Parking",
-                              icon: Icons.directions_car_filled_outlined,
-                              key: 4,
-                            ),
-                            ChipData(
-                              label: "Cleaning Service",
-                              icon: Icons.cleaning_services,
-                              key: 5,
-                            ),
-                            ChipData(
-                              label: "Nearby Stores",
-                              icon: Icons.store_outlined,
-                              key: 6,
-                            ),
-                          ].map(
-                            (chip) {
-                              return InputChip(
-                                labelPadding: EdgeInsets.all(4),
-                                avatar: (chip.icon != null)
-                                    ? Icon(
-                                        chip.icon,
-                                        color: selectedFacilities
-                                                .contains(chip.key)
-                                            ? AppColors.secondaryText
-                                            : AppColors.hintTextColor,
-                                        size: 20,
-                                      )
-                                    : null,
-                                onPressed: (() {
-                                  if (selectedFacilities.contains(chip.key)) {
-                                    selectedFacilities.remove(chip.key);
-                                    setState(() {});
-                                  } else {
-                                    selectedFacilities.add(chip.key);
-                                    setState(() {});
-                                  }
-                                }),
-                                label: Text(chip.label),
-                                labelStyle: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: selectedFacilities.contains(chip.key)
-                                      ? AppColors.activeDotColor
-                                      : AppColors.mainColor,
-                                ),
-                                side: BorderSide.none,
-                                backgroundColor:
-                                    selectedFacilities.contains(chip.key)
-                                        ? AppColors.inactiveDotColor
-                                        : AppColors.cardColorLight,
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
+                          );
+                        }),
+                        openBuilder: ((openCtx, _) {
+                          return RoomDetailsScreen(roomID: "12345");
+                        }));
+                  },
+                  childCount: 10,
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1539,7 +1082,7 @@ class RatingContainer extends StatelessWidget {
 BarTouchData get barTouchData => BarTouchData(
       enabled: true,
       touchTooltipData: BarTouchTooltipData(
-        tooltipBgColor: Colors.transparent,
+        // tooltipBgColor: Colors.transparent,
         tooltipPadding: EdgeInsets.zero,
         getTooltipItem: (
           BarChartGroupData group,
