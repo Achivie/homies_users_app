@@ -34,18 +34,18 @@ class _AllBookingsScreenState extends State<AllBookingsScreen>
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
-            centerTitle: true,
-            backgroundColor: AppColors.mainColor,
-            title: Text(
-              "Your Bookings",
-              style: TextStyle(
-                fontSize: 18,
-                color: AppColors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+          // const SliverAppBar(
+          //   centerTitle: true,
+          //   backgroundColor: AppColors.mainColor,
+          //   title: Text(
+          //     "Your Bookings",
+          //     style: TextStyle(
+          //       fontSize: 18,
+          //       color: AppColors.white,
+          //       fontWeight: FontWeight.w600,
+          //     ),
+          //   ),
+          // ),
           SliverToBoxAdapter(
             child: Container(
               margin: EdgeInsets.symmetric(

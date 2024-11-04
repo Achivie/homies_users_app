@@ -119,6 +119,7 @@ class _RoommatePageState extends State<RoommatePage> {
   ];
   List<RoommateModel> roommatesHistory = [];
   int lastDeletedIdx = 0;
+  bool isEnded = false;
 
   @override
   void initState() {
@@ -144,10 +145,12 @@ class _RoommatePageState extends State<RoommatePage> {
         controller: appinioSwiperController,
         backgroundCardCount: 1,
         swipeOptions: const SwipeOptions.only(left: true, right: true),
-        onEnd: addRoommates,
+        onEnd: (() {}),
         onSwipeBegin: ((int idx1, int idx2, SwiperActivity swipeActivity) {}),
         onSwipeEnd: ((int idx1, int idx2, SwiperActivity swipeActivity) {
           // log(swipeActivity.currentOffset.dx.toString());
+          // log(appinioSwiperController.cardIndex.toString());
+          // log(roommates.length.toString());
           if (swipeActivity.currentOffset.dx < 0) {
             log("Delete");
           } else if (swipeActivity.currentOffset.dx > 0) {
@@ -166,6 +169,7 @@ class _RoommatePageState extends State<RoommatePage> {
           // });
         }),
         cardBuilder: (BuildContext ctx, int index) {
+          // log(index.toString());
           return GestureDetector(
             onTap: (() {
               Navigator.pushNamed(context, AppKeys.roommateProfileRouteKey,

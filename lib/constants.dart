@@ -4,6 +4,8 @@ import 'package:homies/styles.dart';
 import 'package:phonenumbers_core/core.dart';
 
 class AppKeys {
+  static const String profileImage =
+      "https://images.pexels.com/photos/19804055/pexels-photo-19804055/free-photo-of-xoan.jpeg";
   static const String initialRouteKey = "/";
   static const String onboardRouteKey = "/on-board";
   static const String authRouteKey = "/auth";
@@ -34,6 +36,7 @@ class AppKeys {
 
 class AppConstants {
   static const ScrollPhysics scrollPhysics = BouncingScrollPhysics();
+
   static IconData iconSelection(double rate) {
     switch (rate) {
       case 1 || 2:

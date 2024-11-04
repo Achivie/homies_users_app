@@ -44,13 +44,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               expandedTitleScale: 1,
               stretchModes: const <StretchMode>[],
               background: Padding(
-                padding: const EdgeInsets.only(top: 60),
+                padding: const EdgeInsets.only(
+                  top: 60,
+                  left: 15,
+                  right: 15,
+                  bottom: 10,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Hero(
-                      tag:
-                          "https://images.pexels.com/photos/19804055/pexels-photo-19804055/free-photo-of-xoan.jpeg",
+                      tag: AppKeys.profileImage,
                       child: Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
@@ -65,8 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Navigator.pushNamed(
                               context,
                               AppKeys.imagePreviewRouteKey,
-                              arguments:
-                                  "https://images.pexels.com/photos/19804055/pexels-photo-19804055/free-photo-of-xoan.jpeg",
+                              arguments: AppKeys.profileImage,
                             );
                           }),
                           child: CircleAvatar(
@@ -78,37 +81,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Henry Quill",
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w600,
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Rupam Karmakar",
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.star,
-                              color: AppColors.secondaryText,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              "320 points",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.white,
-                                fontWeight: FontWeight.w600,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.star,
+                                color: AppColors.secondaryText,
                               ),
-                            ),
-                          ],
-                        )
-                      ],
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "320 points",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),

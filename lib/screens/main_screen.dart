@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -9,8 +10,11 @@ import 'package:geolocator/geolocator.dart' as GeoLocator;
 import 'package:homies/screens/bookings_screen.dart';
 import 'package:homies/screens/home_page.dart';
 import 'package:homies/screens/message_page.dart';
+import 'package:homies/screens/notification_screen.dart';
 import 'package:homies/screens/roommate_page.dart';
+import 'package:homies/screens/search_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:badges/badges.dart' as badges;
 
 import '../constants.dart';
 import '../styles.dart';
@@ -131,7 +135,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: selectedHomeIndex == 1
+      appBar: selectedHomeIndex != 0
           ? AppBar(
               centerTitle: true,
               backgroundColor: AppColors.mainColor,
@@ -152,8 +156,12 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
               ),
-              title: const Text(
-                "Roommates",
+              title: Text(
+                selectedHomeIndex == 1
+                    ? "Roommates"
+                    : selectedHomeIndex == 2
+                        ? "Message"
+                        : "Your Bookings",
                 style: TextStyle(
                   fontSize: 18,
                   color: AppColors.white,
@@ -161,13 +169,79 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               actions: [
-                IconButton(
-                  onPressed: (() {}),
-                  icon: Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.white,
+                badges.Badge(
+                  position: badges.BadgePosition.topEnd(top: 4, end: 3),
+                  badgeStyle: badges.BadgeStyle(
+                    padding: EdgeInsets.all(2),
                   ),
+                  badgeContent: Text(
+                    "10",
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 10,
+                    ),
+                  ),
+                  child: OpenContainer(
+                      transitionDuration: const Duration(
+                        milliseconds: 400,
+                      ),
+                      tappable: false,
+                      closedElevation: 0,
+                      openElevation: 0,
+                      closedColor: AppColors.transparent,
+                      openColor: AppColors.transparent,
+                      closedBuilder: ((closedCtx, openContainer) {
+                        return Container(
+                          width: 45,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.mainColor,
+                          ),
+                          child: IconButton(
+                            onPressed: openContainer,
+                            icon: Icon(
+                              Icons.notifications_none_rounded,
+                              color: AppColors.white,
+                              size: 25,
+                            ),
+                          ),
+                        );
+                      }),
+                      openBuilder: ((openCtx, _) {
+                        return NotificationScreen();
+                      })),
                 ),
+                OpenContainer(
+                    transitionDuration: const Duration(
+                      milliseconds: 400,
+                    ),
+                    tappable: false,
+                    closedElevation: 0,
+                    openElevation: 0,
+                    closedColor: AppColors.transparent,
+                    openColor: AppColors.transparent,
+                    closedBuilder: ((closedCtx, openContainer) {
+                      return Container(
+                        width: 45,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.mainColor,
+                        ),
+                        child: IconButton(
+                          onPressed: openContainer,
+                          icon: Icon(
+                            Icons.search_rounded,
+                            color: AppColors.white,
+                            size: 25,
+                          ),
+                        ),
+                      );
+                    }),
+                    openBuilder: ((openCtx, _) {
+                      return SearchScreen();
+                    })),
               ],
             )
           : null,
